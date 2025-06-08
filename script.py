@@ -13,11 +13,15 @@ from googleapiclient.http import MediaIoBaseUpload
 
 from PyPDF2 import PdfReader, PdfWriter
 from datetime import datetime
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 SENDER_EMAIL = "service@iciciprulife.com"
 SUBJECT = "Your renewal premium receipt"
-PDF_PASSWORD = "vipu1204"
-DRIVE_FOLDER_ID = "1mzHPpsTlEQ4hGSr7DoBJ-it4unc0njMd"
+PDF_PASSWORD = os.getenv("PDF_PASSWORD")
+DRIVE_FOLDER_ID = os.getenv("DRIVE_FOLDER_ID")
 
 SCOPES = [
     "https://www.googleapis.com/auth/gmail.readonly",
