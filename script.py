@@ -90,20 +90,25 @@ def upload_to_drive(drive_service, file_path, folder_id):
     uploaded_file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
     print(f"Uploaded to Drive: {uploaded_file.get('id')}")
 
-def main():
+def main(input_file_path, is_file_from_email: bool = True):
     creds = authenticate_google_services()
-    gmail_service = build('gmail', 'v1', credentials=creds)
     drive_service = build('drive', 'v3', credentials=creds)
-
-    downloaded_pdf_file = get_matching_emails(gmail_service)
-    if not downloaded_pdf_file:
-        print("No PDF file downloaded.")
-        return
     
+    if is_file_from_email:
+        gmail_service = build('gmail', 'v1', credentials=creds)
+
+        downloaded_pdf_file = get_matching_emails(gmail_service)
+        if not downloaded_pdf_file:
+            print("No PDF file downloaded.")
+            return
+    else:
+        downloaded_pdf_file = input_file_path
+
     decrypted_pdf_file = f"{datetime.now().strftime('%B%Y')}.pdf"
     remove_pdf_password(downloaded_pdf_file, decrypted_pdf_file, PDF_PASSWORD)
     upload_to_drive(drive_service, decrypted_pdf_file, DRIVE_FOLDER_ID)
 
 if __name__ == "__main__":
-    main()
+    downloaded_pdf_file = "F5879300_T6324138_228083596.pdf"
+    main(downloaded_pdf_file, False)
     print("Script completed successfully.")
